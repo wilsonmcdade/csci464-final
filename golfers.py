@@ -1,5 +1,6 @@
 import copy
 import math
+import random
 
 class Person:
     def __init__(self, name, id, partners, preferences):
@@ -22,7 +23,7 @@ class Team:
     def __eq__(self, value):
         check = True
         for member in self.members:
-            if not any(person.name == member.name for person in value.members):
+            if not any(person.id == member.id for person in value.members):
                 check = False
         #check = set(self.members.name).issubset(value.members.name)
 
@@ -64,6 +65,10 @@ def round_robin(teamcount,all_people):
     og_all_people = all_people
     # team size based on the number of teams that you want vs how many people
     teamsize = math.ceil(len(all_people)/teamcount)
+    numval = teamsize * teamcount
+    # if we need empty seats, create empty people
+    for i in range(numval - len(all_people)):
+        og_all_people.append(Person("empty", -random.random(), [], []))
     # 4 x count grid, each column is a team
     team_grid = [[0 for x in range(teamsize)] for y in range(teamcount)]
     round = 0
@@ -122,17 +127,17 @@ def main():
     person1 = Person("person1", 0, [], [("person7",0)])
     person2 = Person("person2", 1, [], [("person8",1)])
     person3 = Person("person3", 2, [], [])
-    person4 = Person("person4", 0, [], [])
-    person5 = Person("person5", 1, [], [])
-    person6 = Person("person6", 2, [], [])
-    person7 = Person("person7", 0, [], [])
-    person8 = Person("person8", 1, [], [])
-    person9 = Person("person9", 2, [], [])
-    person10 = Person("person10", 0, [], [])
-    person11 = Person("person11", 1, [], [])
-    person12 = Person("person12", 2, [], [])
-    person13 = Person("person13", 1, [], [])
-    person14 = Person("person14", 2, [], [])
+    person4 = Person("person4", 3, [], [])
+    person5 = Person("person5", 4, [], [])
+    person6 = Person("person6", 5, [], [])
+    person7 = Person("person7", 6, [], [])
+    person8 = Person("person8", 7, [], [])
+    person9 = Person("person9", 8, [], [])
+    person10 = Person("person10", 9, [], [])
+    person11 = Person("person11", 10, [], [])
+    person12 = Person("person12", 11, [], [])
+    person13 = Person("person13", 12, [], [])
+    person14 = Person("person14", 13, [], [])
 
     all_people = [person1,person2,person3,person4,person5,person6,person7,person8,person9,person10,person11,person12,person13,person14]
 
@@ -140,7 +145,7 @@ def main():
     print(team1.get_teamstr())
 
     # give the number of teams & people to assign
-    all_teams = round_robin(4,all_people)
+    all_teams = round_robin(7,all_people)
     # sort by badness ascending
     all_teams.sort(key=lambda x: x[1])
 
