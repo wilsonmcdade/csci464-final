@@ -1,4 +1,5 @@
-from operator import itemgetter
+import copy
+import math
 
 class Person:
     def __init__(self, name, id, partners, preferences):
@@ -15,6 +16,17 @@ class Team:
         self.teamnum = teamnum
         self.members = members # list of people
         self.unitnum = unitnum
+        self.unhappiness = 0
+        self.rule_break = False
+    # a team is equal if the members of the team are the same
+    def __eq__(self, value):
+        check = True
+        for member in self.members:
+            if not any(person.name == member.name for person in value.members):
+                check = False
+        #check = set(self.members.name).issubset(value.members.name)
+
+        return check
 
     def get_teamstr(self): # to help with printing
         finalstr = "Team " + str(self.teamnum) + " ["
@@ -36,39 +48,79 @@ def make_team(teamnum, people, unitnum):
         without_person.pop(personi)
         for notperson in without_person:
             people[personi].partners.append(notperson)
+        # check the preferences and update the unhappiness and whether the team breaks the rules
+        for pref in people[personi].preference:
+            for person in people:
+                if person.name == pref[0]:
+                    newteam.unhappiness += pref[1]
+                    if pref[1] == 0:
+                        newteam.rule_break = True
     # that should update all the people
     return newteam
 
 
-def round_robin(teamcount, all_people,teamsize):
+def round_robin(teamcount,all_people):
     # initial setup
+    og_all_people = all_people
+    # team size based on the number of teams that you want vs how many people
+    teamsize = math.ceil(len(all_people)/teamcount)
     # 4 x count grid, each column is a team
     team_grid = [[0 for x in range(teamsize)] for y in range(teamcount)]
-    people_ind = 0
     round = 0
     all_teams = []
+    first_team = [1]
+    check = False
 
-    # Round 1
-    for j in range(teamsize):
+    while check is False:
+        people_list = og_all_people[:]
+        people_ind = 0
+        end = people_list[len(people_list) - round:len(people_list)]
+        # each set of teams gets a total unhappiness score, 
+        # and a check for if they're breaking the rules
+        team_set = []
+        rule_broken = False
+        total_unhappiness = 0
+        if len(end) != 0:
+            people_list[1:1] = end
+        # For each round, change the team setup
+        for j in range(teamsize):
+            odd = j % 2
+            for i in range(teamcount):
+                if people_ind < len(people_list):
+                    if odd == 0:
+                        team_grid[i][j] = people_list[people_ind]
+                    # assign backwards for proper round robin
+                    elif odd == 1:
+                        team_grid[teamcount - 1 - i][j] = people_list[people_ind]
+                    people_ind = people_ind + 1
+        # Then create teams based on each column
         for i in range(teamcount):
-            if people_ind < len(all_people):
-                team_grid[i][j] = all_people[people_ind]
-                people_ind = people_ind + 1
-
-    for i in range(teamcount):
-        team = make_team(i,team_grid[i],round)
-        all_teams.append(team)
-
-    # From here we need to shift everything except 1 to the right until the teams come out the same
-
+            team = make_team(i,team_grid[i],round)
+            total_unhappiness += team.unhappiness
+            if team.rule_break:
+                rule_broken = True
+            # If this is the first team, keep it separate so we know when we go back to it
+            if i == 0 and round == 0:
+                first_team = copy.deepcopy(team)
+            # if we hit that team stop
+            else:
+                check = (team == first_team)
+            if check is True:
+                break
+            team_set.append(team)
+        # Increment rounds 
+        round = round + 1
+        # Any formation that requires a rule to be broken doesn't get considered
+        if not rule_broken and len(team_set) != 0:
+            all_teams.append([copy.deepcopy(team_set),total_unhappiness])
     return all_teams
 
     
 
 def main():
     # do main things
-    person1 = Person("person1", 0, [], [])
-    person2 = Person("person2", 1, [], [])
+    person1 = Person("person1", 0, [], [("person7",0)])
+    person2 = Person("person2", 1, [], [("person8",1)])
     person3 = Person("person3", 2, [], [])
     person4 = Person("person4", 0, [], [])
     person5 = Person("person5", 1, [], [])
@@ -87,7 +139,20 @@ def main():
     team1 = make_team(1, [person1, person2, person3], 1)
     print(team1.get_teamstr())
 
-    round_robin(7,all_people,2)
+    # give the number of teams & people to assign
+    all_teams = round_robin(4,all_people)
+    # sort by badness ascending
+    all_teams.sort(key=lambda x: x[1])
+
+    # Print out the teams and however many we can have
+    round = 0
+    for teamset in all_teams:
+        round += 1
+        r_string = "Round: " + str(round) + ", Unhappiness: " + str(teamset[1])
+        print(r_string)
+        for team in teamset[0]:
+            print(team.get_teamstr())
+
 
 
 if __name__ == '__main__':
