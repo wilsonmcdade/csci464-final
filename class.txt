@@ -1,0 +1,141 @@
+Round 1:
+Gabi Golemb gbg6260
+Artem Goncharov ayg9172
+Alex Peternelj alp5970
+Rafael Rivera rmr9535
+
+Joey Esposito jre9158
+Srikar Sundaram ss8931
+Andrew Dimauro asd9216
+Nicholas Milonni nrm3665
+
+Lily Ready lr4631 
+Gabe Frahm gjf9639
+Andrew Toskas ast8705
+Lydia Klecan lec7518
+
+Kerri Walsh kmw1704
+Sherry Robinson smr8653
+Rhys Ierley rri3334
+Anna Kurchenko amk1881
+
+Melissa Burisky mpb8984
+Jay Pitcher jtp9005
+Jonas Long jl4231
+Andrew Dimauro asd9216
+
+Wilson Mcdade wam2134
+Joseph Doros jd3545
+Madison Burke meb7571
+
+Tyler Lapiana tjl9096
+Griffin Danner-Doran gtd6864
+Tejas Gadwalkar tsg1472
+
+Round 2:
+Tejas Gadwalkar tsg1472
+Artem Goncharov ayg9172
+Sherry Robinson smr8653
+
+Srikar Sundaram ss8931
+Abdullah Sakayl aks4803
+Madison Burke meb7571
+Nicholas Milonni nrm3665
+
+Griffin Danner-Doran gtd6864
+Lily Ready lr4631
+Gabi Golemb gbg6260
+Joseph Doros jd3545
+
+Lydia Klecan lek7518
+Tyler Lapiana tjl9096
+Gabe Frahm    gjf9639
+Jonas Long     jl4231
+
+Andrew Toskas ast8705
+Melissa Burisky mpb8984
+Anna Kurchenko amk1881
+Rafael Rivera rmr9535
+
+Rhys Ierley rri3334
+Jay Pitcher jtp9005
+Joey Esposito jre9158
+Alex Peternelj alp5970
+
+Andrew Dimauro asd9216    
+Wilson Mcdade wam2134
+Kerri Walsh kmw1704
+
+Round 3:
+Abdullah Sakayl aks4803
+Alex Peternelj alp5970
+Andrew Toskas ast8705
+Andrew Dimauro asd9216    
+
+Anna Kurchenko amk1881
+Artem Goncharov ayg9172
+Gabe Frahm    gjf9639
+Madison Burke meb7571
+
+Griffin Danner-Doran gtd6864
+Jay Pitcher jtp9005
+Jonas Long     jl4231
+
+Tyler Lapiana tjl9096
+Kerri Walsh kmw1704
+Lydia Klecan lek7518
+Joey Esposito jre9158
+
+Melissa Burisky mpb8984
+Nicholas Milonni nrm3665
+Rafael Rivera rmr9535
+Gabi Golemb gbg6260
+
+Rhys Ierley rri3334
+Sherry Robinson smr8653
+Srikar Sundaram ss8931
+Joseph Doros jd3545    
+
+Wilson Mcdade wam2134
+Tejas Gadwalkar tsg1472
+Lily Ready lr4631
+
+Round 4:
+Srikar Sundaram ss8931
+Lily Ready lr4631
+Nicholas Milonni nrm3665
+
+Griffin Danner-Doran gtd6864
+Melissa Burisky mpb8984
+Anna Kurchenko amk1881
+Rhys Ierley rri3334
+
+Rafael Rivera rmr9535
+Andrew Dimauro asd9216
+Jay Pitcher jtp9005
+Abdullah Sakayl aks4803
+
+Gabe Frahm gjf9639
+Lydia Klecan lek7518
+Jonas Long jl4231
+Kerri Walsh kmw1704
+
+Sherry Robinson smr8653
+Wilson Mcdade wam2134
+Artem Goncharov ayg9172
+Tyler Lapiana tjl9096
+
+Gabi Golemb gbg6260
+Madison Burke meb7571
+Alex Peternelj alp5970
+Tejas Gadwalkar tsg1472
+
+Andrew Toskas ast8705
+Joey Esposito jre9158
+Joseph Doros jd3545
+
+Preferences:
+jd3545, jre9158, 1
+jd3545, ast8705, 1
+gbg6260, ast8705, 0
+meb7571, gbg6260, 1
