@@ -17,8 +17,6 @@ class Team:
         self.teamnum = teamnum
         self.members = members # list of people
         self.unitnum = unitnum
-        self.unhappiness = 0
-        self.rule_break = False
     # a team is equal if the members of the team are the same
     def __eq__(self, value):
         check = True
@@ -28,9 +26,35 @@ class Team:
         #check = set(self.members.name).issubset(value.members.name)
 
         return check
+    
+    def get_unhappiness(self):
+        unhappiness = 0
+
+        for personi in range(len(self.members)):
+            # check the preferences and update the unhappiness and whether the team breaks the rules
+            for pref in self.members[personi].preference:
+                for person in self.members:
+                    if person.name == pref[0]:
+                        unhappiness += pref[1]
+
+        return unhappiness
+    
+    def get_rulebreak(self):
+        rule_break = False
+
+        for personi in range(len(self.members)):
+            # check the preferences and update the unhappiness and whether the team breaks the rules
+            for pref in self.members[personi].preference:
+                for person in self.members:
+                    if person.name == pref[0]:
+                        if pref[1] == 0:
+                            self.rule_break = True
+
+        return rule_break
 
     def get_teamstr(self): # to help with printing
-        finalstr = "Team " + str(self.teamnum) + ", Unit " + str(self.unitnum) + " Unhappiness " + str(self.unhappiness) + " ["
+        finalstr = "Rule break!" if self.get_rulebreak() else ""
+        finalstr = "Team " + str(self.teamnum) + ", Unit " + str(self.unitnum) + " Unhappiness " + str(self.get_unhappiness()) + " ["
         first = True
         for member in self.members:
             if first:
@@ -44,18 +68,12 @@ class Team:
 
 def make_team(teamnum, people, unitnum):
     newteam = Team(teamnum, people, unitnum)
+
     for personi in range(len(people)):
         without_person = people.copy()
         without_person.pop(personi)
         for notperson in without_person:
             people[personi].partners.append(notperson)
-        # check the preferences and update the unhappiness and whether the team breaks the rules
-        for pref in people[personi].preference:
-            for person in people:
-                if person.name == pref[0]:
-                    newteam.unhappiness += pref[1]
-                    if pref[1] == 0:
-                        newteam.rule_break = True
     # that should update all the people
     return newteam
 
