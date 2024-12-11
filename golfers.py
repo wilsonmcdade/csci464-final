@@ -30,7 +30,7 @@ class Team:
         return check
 
     def get_teamstr(self): # to help with printing
-        finalstr = "Team " + str(self.teamnum) + " ["
+        finalstr = "Team " + str(self.teamnum) + ", Unit " + str(self.unitnum) + " Unhappiness " + str(self.unhappiness) + " ["
         first = True
         for member in self.members:
             if first:
