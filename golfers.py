@@ -1,6 +1,7 @@
 import copy
 import math
 import random
+from itertools import combinations
 
 class Person:
     def __init__(self, name, id, partners, preferences):
@@ -19,6 +20,7 @@ class Team:
         self.unitnum = unitnum
         self.unhappiness = 0
         self.rule_break = False
+        self.overlap = 0
     # a team is equal if the members of the team are the same
     def __eq__(self, value):
         check = True
@@ -47,6 +49,9 @@ def make_team(teamnum, people, unitnum):
     for personi in range(len(people)):
         without_person = people.copy()
         without_person.pop(personi)
+        # check for what overlap there is before adding the people to the partners list
+        newteam.overlap += len(set(people[personi].partners) & set(people))/2
+
         for notperson in without_person:
             people[personi].partners.append(notperson)
         # check the preferences and update the unhappiness and whether the team breaks the rules
@@ -56,15 +61,14 @@ def make_team(teamnum, people, unitnum):
                     newteam.unhappiness += pref[1]
                     if pref[1] == 0:
                         newteam.rule_break = True
+
     # that should update all the people
     return newteam
 
 
-def round_robin(teamcount,all_people):
+def round_robin(teamcount,teamsize, all_people):
     # initial setup
     og_all_people = all_people
-    # team size based on the number of teams that you want vs how many people
-    teamsize = math.ceil(len(all_people)/teamcount)
     numval = teamsize * teamcount
     # if we need empty seats, create empty people
     for i in range(numval - len(all_people)):
@@ -85,6 +89,7 @@ def round_robin(teamcount,all_people):
         team_set = []
         rule_broken = False
         total_unhappiness = 0
+        total_overlap = 0
         if len(end) != 0:
             people_list[1:1] = end
         # For each round, change the team setup
@@ -102,6 +107,7 @@ def round_robin(teamcount,all_people):
         for i in range(teamcount):
             team = make_team(i,team_grid[i],round)
             total_unhappiness += team.unhappiness
+            total_overlap += team.overlap
             if team.rule_break:
                 rule_broken = True
             # If this is the first team, keep it separate so we know when we go back to it
@@ -117,10 +123,44 @@ def round_robin(teamcount,all_people):
         round = round + 1
         # Any formation that requires a rule to be broken doesn't get considered
         if not rule_broken and len(team_set) != 0:
-            all_teams.append([copy.deepcopy(team_set),total_unhappiness])
+            all_teams.append([copy.deepcopy(team_set),total_unhappiness,total_overlap])
     return all_teams
 
-    
+def divide_chunks(l, n):
+    # looping till length l
+    for i in range(0, len(l), n): 
+        yield l[i:i + n]
+
+def brute_force(iterations, teamsize, teamcount, all_people):
+    new_all_people = copy.deepcopy(all_people)
+    # if we need empty seats, create empty people
+    #for i in range(numval - len(all_people)):
+     #   new_all_people.append(Person("empty", -random.random(), [], []))
+    it_teams = []
+    it_unhappy = 0
+    it_overlap = 0
+    counter = 0
+    while counter < iterations:
+        it_break = False
+        random.shuffle(new_all_people)
+        split = list(divide_chunks(new_all_people,4))
+        team_set = []
+        for i in range(len(split)):
+            new_team = make_team(i,split[i],counter)
+            it_unhappy += new_team.unhappiness
+            it_overlap += new_team.overlap
+            if new_team.rule_break:
+                it_break = True
+                break
+            else:
+                team_set.append(new_team)
+        if it_break is False:
+            it_teams.append(copy.deepcopy(team_set))
+            counter += 1
+
+    return [it_teams,it_unhappy,it_overlap]
+
+
 
 def main():
     # do main things
@@ -139,23 +179,45 @@ def main():
     person13 = Person("person13", 12, [], [])
     person14 = Person("person14", 13, [], [])
 
-    all_people = [person1,person2,person3,person4,person5,person6,person7,person8,person9,person10,person11,person12,person13,person14]
+    all_people = [person1,person2,person3,person4,person5,person6,person7,person8,person9,person10,
+                  person11,person12,person13,person14]
+
+    round_robin_people = copy.deepcopy(all_people)
+    random_people = copy.deepcopy(all_people)
 
     team1 = make_team(1, [person1, person2, person3], 1)
     print(team1.get_teamstr())
 
+
     # give the number of teams & people to assign
-    all_teams = round_robin(7,all_people)
-    # sort by badness ascending
-    all_teams.sort(key=lambda x: x[1])
+    all_teams = round_robin(4,4,round_robin_people)
+    # sort by overlap ascending then by badness ascending
+    all_teams.sort(key=lambda x: (x[2],x[1]))
+
+    random_teams = []
+    for i in range(10000):
+        random_team = brute_force(5,4,4,random_people)
+        random_teams.append(random_team)
+    random_teams.sort(key=lambda x: (x[2],x[1]))
 
     # Print out the teams and however many we can have
     round = 0
     for teamset in all_teams:
         round += 1
-        r_string = "Round: " + str(round) + ", Unhappiness: " + str(teamset[1])
+        r_string = "Round: " + str(round) + ", Overlap: " + str(teamset[2]) + ", Unhappiness: " + str(teamset[1])
         print(r_string)
         for team in teamset[0]:
+            print(team.get_teamstr())
+
+    units = 5
+    # BRUTE FORCE
+    print("Total Overlap: " + str(random_teams[0][2]) + ", Unhappiness: " + str(random_teams[0][1]))
+    un = 0
+    for team_set in random_teams[0][0]:
+        u_string = "Unit: " + str(un)
+        print(u_string)
+        un += 1
+        for team in team_set:
             print(team.get_teamstr())
 
 
