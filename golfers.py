@@ -11,6 +11,28 @@ class Person:
         # where X = 0 means absolute rule
         # where X = 1 means (negative) preference
 
+    def get_personstr(self):
+        finalstr = "Person: " + self.name + ", ID: " + str(self.id) + ",\t\t Partners: ["
+        first = True
+        for partner in self.partners:
+            if first:
+                finalstr = finalstr + partner[0].name + ", " + str(partner[1]) + ")"
+                first = False
+            else:
+                finalstr = finalstr + ", (" + partner[0].name + ", " + str(partner[1]) + ")"
+        finalstr = finalstr + "], Preferences: ["
+
+        first = True
+        for pref in self.preference:
+            if first:
+                finalstr = finalstr + pref[0] + str(pref[1])
+                first = False
+            else:
+                finalstr = finalstr + ", " + pref[0] + str(pref[1])
+        finalstr = finalstr + "]"
+        
+        return finalstr
+
 
 class Team:
     def __init__(self, teamnum, members, unitnum):
@@ -73,10 +95,32 @@ def make_team(teamnum, people, unitnum):
         without_person = people.copy()
         without_person.pop(personi)
         for notperson in without_person:
-            people[personi].partners.append(notperson)
+            people[personi].partners.append((notperson,unitnum))
     # that should update all the people
     return newteam
 
+"""
+Evaluate goodness of team pairings 
+Looks at previous partnerships and rule breakage
+TODO: Add a smarter grading algorithm to handle some of the constraints we've chosen
+"""
+def evaluate(teams):
+    scores = list()
+    for team in teams:
+        badness = 0
+        for person in team.members:
+            for pref in person.preference:
+                if pref[0] in team.members:
+                    badness += pref[1]
+            for partner in person.partners:
+                if team.unitnum > partner[1]:
+                    if partner[0] in team.members:
+                        badness += 1
+
+    
+        scores.append(badness)
+
+    return scores
 
 def round_robin(teamcount,all_people):
     # initial setup
@@ -138,28 +182,16 @@ def round_robin(teamcount,all_people):
             all_teams.append([copy.deepcopy(team_set),total_unhappiness])
     return all_teams
 
-    
-
 def main():
     # do main things
     person1 = Person("person1", 0, [], [("person7",0)])
     person2 = Person("person2", 1, [], [("person8",1)])
     person3 = Person("person3", 2, [], [])
-    person4 = Person("person4", 3, [], [])
-    person5 = Person("person5", 4, [], [])
-    person6 = Person("person6", 5, [], [])
-    person7 = Person("person7", 6, [], [])
-    person8 = Person("person8", 7, [], [])
-    person9 = Person("person9", 8, [], [])
-    person10 = Person("person10", 9, [], [])
-    person11 = Person("person11", 10, [], [])
-    person12 = Person("person12", 11, [], [])
-    person13 = Person("person13", 12, [], [])
-    person14 = Person("person14", 13, [], [])
-
-    all_people = [person1,person2,person3,person4,person5,person6,person7,person8,person9,person10,person11,person12,person13,person14]
-
-    team1 = make_team(1, [person1, person2, person3], 1)
+    team1 = make_team(1, [person1, person2,  person3], 1)
+    person1.partners.append((person2, 0))
+    print(evaluate([team1]))
+    for m in team1.members:
+        print(m.get_personstr())
     print(team1.get_teamstr())
 
     # give the number of teams & people to assign
