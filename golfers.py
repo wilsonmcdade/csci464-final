@@ -1,103 +1,8 @@
 import copy
 import math
 import random
-
-class Person:
-    def __init__(self, name, id, partners, preferences):
-        self.name = name
-        self.id = id
-        self.partners = partners
-        self.preference = preferences # list of tuples (name of undesired partener, X)
-        # where X = 0 means absolute rule
-        # where X = 1 means (negative) preference
-
-    def get_personstr(self):
-        finalstr = "Person: " + self.name + ", ID: " + str(self.id) + ",\t\t Partners: ["
-        first = True
-        for partner in self.partners:
-            if first:
-                finalstr = finalstr + partner[0].name + ", " + str(partner[1]) + ")"
-                first = False
-            else:
-                finalstr = finalstr + ", (" + partner[0].name + ", " + str(partner[1]) + ")"
-        finalstr = finalstr + "], Preferences: ["
-
-        first = True
-        for pref in self.preference:
-            if first:
-                finalstr = finalstr + pref[0] + str(pref[1])
-                first = False
-            else:
-                finalstr = finalstr + ", " + pref[0] + str(pref[1])
-        finalstr = finalstr + "]"
-        
-        return finalstr
-
-
-class Team:
-    def __init__(self, teamnum, members, unitnum):
-        self.teamnum = teamnum
-        self.members = members # list of people
-        self.unitnum = unitnum
-    # a team is equal if the members of the team are the same
-    def __eq__(self, value):
-        check = True
-        for member in self.members:
-            if not any(person.id == member.id for person in value.members):
-                check = False
-        #check = set(self.members.name).issubset(value.members.name)
-
-        return check
-    
-    def get_unhappiness(self):
-        unhappiness = 0
-
-        for personi in range(len(self.members)):
-            # check the preferences and update the unhappiness and whether the team breaks the rules
-            for pref in self.members[personi].preference:
-                for person in self.members:
-                    if person.name == pref[0]:
-                        unhappiness += pref[1]
-
-        return unhappiness
-    
-    def get_rulebreak(self):
-        rule_break = False
-
-        for personi in range(len(self.members)):
-            # check the preferences and update the unhappiness and whether the team breaks the rules
-            for pref in self.members[personi].preference:
-                for person in self.members:
-                    if person.name == pref[0]:
-                        if pref[1] == 0:
-                            self.rule_break = True
-
-        return rule_break
-
-    def get_teamstr(self): # to help with printing
-        finalstr = "Rule break!" if self.get_rulebreak() else ""
-        finalstr = "Team " + str(self.teamnum) + ", Unit " + str(self.unitnum) + " Unhappiness " + str(self.get_unhappiness()) + " ["
-        first = True
-        for member in self.members:
-            if first:
-                finalstr = finalstr + member.name
-                first = False
-            else:
-                finalstr = finalstr + ", " + member.name
-        finalstr = finalstr + "]"
-        return finalstr
-
-
-def make_team(teamnum, people, unitnum):
-    newteam = Team(teamnum, people, unitnum)
-
-    for personi in range(len(people)):
-        without_person = people.copy()
-        without_person.pop(personi)
-        for notperson in without_person:
-            people[personi].partners.append((notperson,unitnum))
-    # that should update all the people
-    return newteam
+from eda import process
+from models import Person, Team, make_team
 
 """
 Evaluate goodness of team pairings 
@@ -117,7 +22,6 @@ def evaluate(teams):
                     if partner[0] in team.members:
                         badness += 1
 
-    
         scores.append(badness)
 
     return scores
@@ -189,26 +93,43 @@ def main():
     person3 = Person("person3", 2, [], [])
     team1 = make_team(1, [person1, person2,  person3], 1)
     person1.partners.append((person2, 0))
-    print(evaluate([team1]))
-    for m in team1.members:
-        print(m.get_personstr())
-    print(team1.get_teamstr())
+    #print(evaluate([team1]))
+    #for m in team1.members:
+    #    print(m.get_personstr())
+    #print(team1.get_teamstr())
 
     # give the number of teams & people to assign
-    all_teams = round_robin(7,all_people)
+    #all_teams = round_robin(7,all_people)
     # sort by badness ascending
-    all_teams.sort(key=lambda x: x[1])
+    #all_teams.sort(key=lambda x: x[1])
 
     # Print out the teams and however many we can have
-    round = 0
-    for teamset in all_teams:
-        round += 1
-        r_string = "Round: " + str(round) + ", Unhappiness: " + str(teamset[1])
-        print(r_string)
-        for team in teamset[0]:
-            print(team.get_teamstr())
+    #round = 0
+    #for teamset in all_teams:
+    #    round += 1
+    #    r_string = "Round: " + str(round) + ", Unhappiness: " + str(teamset[1])
+    #    print(r_string)
+    #    for team in teamset[0]:
+    #        print(team.get_teamstr())
 
+    classteams = process("class.txt")
+    scores = evaluate(classteams)
 
+    i = 0
+    currunit = 0
+    for t in classteams:
+        
+        if int(t.unitnum) != currunit:
+            print("Unit {0}".format(t.unitnum))
+            currunit = int(t.unitnum)
+
+        print("Team Number: {0}, Badness {1}, \t\t {2}".format(t.teamnum,scores[i],t.get_teamstr()))
+        i+=1
+
+    #for t in process():
+    #    print(t.get_teamstr())
+    #    for p in t.members:
+    #        print(p.get_personstr())
 
 if __name__ == '__main__':
     main()

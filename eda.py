@@ -2,7 +2,7 @@
 Exploratory Data Analysis script
 """
 
-from golfers import Person, Team, make_team
+from models import Person, Team, make_team
 
 def process(file="class.txt"):
     scientists = dict()  # set of scientists as Persons
@@ -35,9 +35,9 @@ def process(file="class.txt"):
                 l = line.split(" ")
 
                 if l[0] == "": 
-                    print(line)
-                if l[0] in scientists:
-                    p = scientists[l[0]]
+                    print("Error")
+                if l[2].strip() in scientists.keys():
+                    p = scientists[l[2].strip()]
                 else:
                     p = Person(name=l[0]+" "+l[1], id=l[2].rstrip(), partners=[], preferences=[])
                 tmp_team.append(p)
@@ -53,14 +53,19 @@ def process(file="class.txt"):
                 continue
             elif state == 2:
                 l = line.split(",")
-                scientists[l[0]].preference.append((l[1],int(l[2])))
+                scientists[l[0]].preference.append((l[1].strip(),int(l[2])))
                 continue
 
         # State machine ended without handling preferences
         if state != 2:
             teams.append(make_team(team_count, tmp_team, unit_count))
 
-    for t in teams:
-        print(t.get_teamstr())
+    #for s in scientists.values():
+    #    print(s.get_personstr())
 
-process()
+    #for t in teams:
+        #print(t.get_teamstr())
+
+    return teams
+
+#process()

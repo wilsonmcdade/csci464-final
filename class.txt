@@ -49,8 +49,8 @@ Joseph Doros jd3545
 
 Lydia Klecan lek7518
 Tyler Lapiana tjl9096
-Gabe Frahm    gjf9639
-Jonas Long     jl4231
+Gabe Frahm gjf9639
+Jonas Long jl4231
 
 Andrew Toskas ast8705
 Melissa Burisky mpb8984
@@ -74,12 +74,12 @@ Andrew Dimauro asd9216
 
 Anna Kurchenko amk1881
 Artem Goncharov ayg9172
-Gabe Frahm    gjf9639
+Gabe Frahm gjf9639
 Madison Burke meb7571
 
 Griffin Danner-Doran gtd6864
 Jay Pitcher jtp9005
-Jonas Long     jl4231
+Jonas Long jl4231
 
 Tyler Lapiana tjl9096
 Kerri Walsh kmw1704
