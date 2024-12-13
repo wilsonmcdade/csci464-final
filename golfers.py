@@ -14,10 +14,10 @@ class Person:
         first = True
         for partner in self.partners:
             if first:
-                finalstr = finalstr + partner.name
+                finalstr = finalstr + partner[0].name + ", " + str(partner[1]) + ")"
                 first = False
             else:
-                finalstr = finalstr + ", " + partner.name
+                finalstr = finalstr + ", (" + partner[0].name + ", " + str(partner[1]) + ")"
         finalstr = finalstr + "], Preferences: ["
 
         first = True
@@ -57,7 +57,7 @@ def make_team(teamnum, people, unitnum):
         without_person = people.copy()
         without_person.pop(personi)
         for notperson in without_person:
-            people[personi].partners.append(notperson)
+            people[personi].partners.append((notperson,unitnum))
     # that should update all the people
     return newteam
 
@@ -75,9 +75,9 @@ def evaluate(teams):
                 if pref[0] in team.members:
                     badness += pref[1]
             for partner in person.partners:
-                if partner in team.members:
-                    badness += 1
-                badness -= team.unitnum
+                if team.unitnum > partner[1]:
+                    if partner[0] in team.members:
+                        badness += 1
 
         scores.append(badness)
 
@@ -89,6 +89,7 @@ def main():
     person2 = Person("person2", 1, [], [])
     person3 = Person("person3", 2, [], [])
     team1 = make_team(1, [person1, person2,  person3], 1)
+    person1.partners.append((person2, 0))
     print(evaluate([team1]))
     for m in team1.members:
         print(m.get_personstr())
